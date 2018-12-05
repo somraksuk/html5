@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!-- netpiejs-->
+<script src="https://cdn.netpie.io/microgear.js"></script>
+<!--เรียกไมโครเกียร์ ผ่านอินเตอร์เน็ต-->
+<script>
+    const APPID="project001";  //Appid
+    const KEY="9Q9S1sQmQhZnbFO"; //Key
+    const SECRET="xGJvNxvbkuYTdzPg83iGgwl1z";//Secret
+    const ALIAS="myhtml"; //ตั้งชื่ออุปกรณ์ชื่ออะไรก็ได้
+    //เครื่องคอมพิวเตอร์ client ALIAS="myhtml" เป็นตัวส่งข้อมูลขึ้น netpie
+    var counter=1; //สร้างตัวแปร counter ตัวนับ
+    var microgear=Microgear.create( //ตั้งค่าสำหรับชื่อมต่อ netpie
+    {//ตัวแปรออบเจ็กต์อาเรย์ ตัวแปร:ค่า ,ตัวแปร:ค่า ,ตัวแปร:ค่า
+       key: KEY,
+       secret:SECRET,
+       alias:ALIAS
+    });
+    //ฟังก์ชันก์นี้จะทำงานเมื่อเชื่อมต่อ netpie สำเร็จ
+    microgear.on('connected',function(){
+       microgear.setAlias(ALIAS) ;//ตั้งชื่อรียกให้กับอุปกรณ์ตามที่ได้กำหนดไว้แล้ว
+       //แสดงข้อตวามหากเชื่อมต่อสำเร็จ
+       document.getElementById("data").innerHTML = "Connect to netpie...";
+            //ตั้งค่าให้ timer ทำงานทุกๆ 2วินาที(2000mS)ฟังก์ชันจะทำงาน
+            setInterval(function(){
+            //ส่งข้อความไปยังอุปกรณ์ที่เชื่อมต่อตามตัวแปร ALIAS ซึ่งก็คือตัวเอง
+            counter++;
+            microgear.chat(ALIAS,"Hello from NETPIE1 = "+counter);//ส่งค่าตัวนับ
+            console.log(counter);//แสดงผลที่จอ
+            },2000);
+    });
+    
+    //ฟังก์ชันก์นี้จะทำงานเมื่อมีข้อมูลหรือข้อความส่งเข้ามา
+    microgear.on('message',function(topic,msg){
+    //แสดงข้อมูลที่ได้รับมา(ในที่นี้เอาข้อมูลที่ได้รับไปแสดงใน HTML elementชื่อ data)
+    document.getElementById("data").innerHTML = topic + ":" + msg;
+    });
+    
+    microgear.connect(APPID); //เชื่อมต่อไปยัง netpie
+</script>
+<div id="data">----------------<div>

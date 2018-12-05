@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!-- netpiejs-->
+<script src="https://cdn.netpie.io/microgear.js"></script>
+<!--เรียกไมโครเกียร์ ผ่านอินเตอร์เน็ต-->
+<script>
+    const APPID="project001";  //Appid
+    const KEY="BEKjXNrbG95FGH3"; //Key myhtml2
+    const SECRET="w3dzju320yzXdmyGFHwSGF8sp";//Secret myhtml2
+    const ALIAS="rxhtml"; //ตั้งชื่ออุปกรณ์ชื่ออะไรก็ได้ต่างจากtxNetpie.html
+    //ชื่อ rxhtml นี้จะนำไปใช้ในไฟล์ผู้ส่ง txNetpie.html
+    //เครื่องคอมพิวเตอร์ client ALIAS="rxhtml" เป็นตัวรับข้อมูลจาก netpie
+    var microgear=Microgear.create( //ตั้งค่าสำหรับชื่อมต่อ netpie
+    {//ตัวแปรออบเจ็กต์อาเรย์ ตัวแปร:ค่า ,ตัวแปร:ค่า ,ตัวแปร:ค่า
+       key: KEY,
+       secret:SECRET,
+       alias:ALIAS
+    });
+    
+    //ฟังก์ชันนี้จะรันเมื่อมีข้อมูลหรือข้อความส่งเข้ามา
+    microgear.on('message',function(topic,msg){
+    //แสดงข้อมูลที่ Log และเอาข้อความไปแทนข้อความของHTML elementชื่อ data)
+    console.log(topic + ":" + msg);
+    document.getElementById("data").innerHTML = topic + ":" + msg;
+    });
+    
+    //ฟังก์ชันนี้จะทำงานเมื่อเชื่อมต่อ netpie สำเร็จ
+    microgear.on('connected',function(){
+       microgear.setAlias(ALIAS) ;//ตั้งชื่อรียกให้กับอุปกรณ์ตามที่ได้กำหนดไว้แล้ว
+       //แสดงข้อตวามหากเชื่อมต่อสำเร็จ
+       document.getElementById("data").innerHTML = "Rx is Connect to netpie...";
+    });
+  
+    microgear.on('present',function(event){
+        console.log(event);
+    });
+    
+    microgear.on('absent',function(event){
+        console.log(event);
+    });
+    
+    microgear.connect(APPID); //เชื่อมต่อไปยัง netpie
+</script>
+<div id="data">----------------<div>
